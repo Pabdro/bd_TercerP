@@ -1,60 +1,69 @@
 version: '3'
-
 services:
-  node1:
-    image: cassandra:latest
-    container_name: cassandra-node1
+  cassandra1:
+    image: cassandra
+    container_name: cassandra1
+    hostname: cassandra1
     ports:
       - "9042:9042"
     environment:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
-      - "CASSANDRA_SEEDS=node1,node2,node3"
-      - "CASSANDRA_CLUSTER_NAME=Test Cluster"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2,cassandra3"
+      - "CASSANDRA_CLUSTER_NAME=Cluster final"
       - "CASSANDRA_DC=datacenter1"
       - "CASSANDRA_RACK=rack1"
+      - "CASSANDRA_PASSWORD=qwert"
     restart: always
     volumes:
-      - ./data/node1:/var/lib/cassandra
+      - ./data/cassandra1:/var/lib/cassandra
       - ./init-scripts:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
+      test: ["CMD", "cqlsh", "-u admin", "-p qwert" ,"-e describe keyspaces"]
       interval: 15s
       timeout: 10s
       retries: 10
 
-  node2:
-    image: cassandra:latest
-    container_name: cassandra-node2
+  cassandra2:
+    image: cassandra
+    container_name: cassandra2
+    hostname: cassandra2
+    ports:
+      - "9043:9042"
     environment:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
-      - "CASSANDRA_SEEDS=node1,node2,node3"
-      - "CASSANDRA_CLUSTER_NAME=Test Cluster"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2,cassandra3"
+      - "CASSANDRA_CLUSTER_NAME=Cluster final"
       - "CASSANDRA_DC=datacenter1"
       - "CASSANDRA_RACK=rack2"
+      - "CASSANDRA_PASSWORD=qwert"
     restart: always
     volumes:
-      - ./data/node2:/var/lib/cassandra
+      - ./data/cassandra2:/var/lib/cassandra
     healthcheck:
       test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
       interval: 15s
       timeout: 10s
       retries: 10
 
-  node3:
-    image: cassandra:latest
-    container_name: cassandra-node3
+  cassandra3:
+    image: cassandra
+    container_name: cassandra3
+    hostname: cassandra3
+    ports:
+      - "9044:9042"
     environment:
       - "MAX_HEAP_SIZE=256M"
       - "HEAP_NEWSIZE=128M"
-      - "CASSANDRA_SEEDS=node1,node2,node3"
-      - "CASSANDRA_CLUSTER_NAME=Test Cluster"
+      - "CASSANDRA_SEEDS=cassandra1,cassandra2,cassandra3"
+      - "CASSANDRA_CLUSTER_NAME=Cluster final"
       - "CASSANDRA_DC=datacenter1"
       - "CASSANDRA_RACK=rack3"
+      - "CASSANDRA_PASSWORD=qwert"
     restart: always
     volumes:
-      - ./data/node3:/var/lib/cassandra
+      - ./data/cassandra3:/var/lib/cassandra
     healthcheck:
       test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
       interval: 15s
@@ -65,11 +74,11 @@ services:
     container_name: cassandra-load-keyspace
     image: cassandra:latest
     depends_on:
-      node1:
+      cassandra1:
         condition: service_healthy
-      node2:
+      cassandra2:
         condition: service_healthy
-      node3:
+      cassandra3:
         condition: service_healthy
     volumes:
       - ./init-scripts/01-keyspace.cql:/docker-entrypoint-initdb.d/01-keyspace.cql

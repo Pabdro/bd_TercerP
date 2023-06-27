@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Waiting for Cassandra to start..."
+echo "Esperando al inicio de Cassandra..."
 sleep 30
 
-echo "Loading Cassandra keyspace..."
-cqlsh node1 -f /docker-entrypoint-initdb.d/01-keyspace.cql
+echo "Cargando el keyspace..."
+cqlsh cassandra1 -f /docker-entrypoint-initdb.d/01-keyspace.cql

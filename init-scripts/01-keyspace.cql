@@ -1,9 +1,9 @@
-CREATE KEYSPACE IF NOT EXISTS test WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': 3};
+CREATE KEYSPACE IF NOT EXISTS prueba WITH replication = {'class': 'NetworkTopologyStrategy', 'datacenter1': 3};
 
-USE test;
+USE prueba;
 
-CREATE TABLE mytable (
+CREATE TABLE persona (
    id UUID PRIMARY KEY,
-   name text,
-   age int
+   nombre text,
+   edad int
 );
